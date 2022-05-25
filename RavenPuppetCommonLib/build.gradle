@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'org.raven.puppet'
+group = 'hu.raven.puppet'
 version = '1.0.0'
 
 repositories {
@@ -31,24 +31,6 @@ dependencies {
     api 'org.apache.commons:commons-math3:3.6.1'
 }
 
-publishing {
-    publications {
-        myLibrary(MavenPublication) {
-            from components.java
-            suppressPomMetadataWarningsFor('runtimeElements')
-            withBuildIdentifier()
-
-        }
-    }
-
-    repositories {
-        maven {
-            name = 'myRepo'
-            url = layout.buildDirectory.dir("repo")
-        }
-    }
-}
-
 tasks.named('jar') {
     manifest {
         attributes('Implementation-Title': project.name,
@@ -58,4 +40,18 @@ tasks.named('jar') {
 
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.Hollo1996'
+                artifactId = 'CommonUtilities'
+                version = '0.0.0'
+            }
+        }
+    }
 }
