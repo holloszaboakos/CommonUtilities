@@ -1,16 +1,29 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
 }
-
-group 'hu.raven.puppet'
-version '1.0.2'
 
 repositories {
     mavenCentral()
-    maven{url 'https://jitpack.io'}
+}
 
+group 'hu.raven.puppet'
+version '1.0.3'
+
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'myRepo'
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
 }
 
 dependencies {
@@ -21,4 +34,19 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+}
+
+java {
+    withSourcesJar()
 }
